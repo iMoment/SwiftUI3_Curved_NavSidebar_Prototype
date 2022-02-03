@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State var showMenu: Bool = false
+    
     var body: some View {
         ZStack {
             VStack(spacing: 15) {
@@ -42,7 +44,8 @@ struct HomeView: View {
                         .font(.title2.bold())
                 )
                 .foregroundColor(Color.white.opacity(0.8))
-                .padding()
+                .padding([.horizontal, .top])
+                .padding(.bottom, 5)
                 
                 ScrollView(.vertical, showsIndicators: false) {
                     VStack(spacing: 25) {
@@ -52,6 +55,8 @@ struct HomeView: View {
                             CardView(story: story)
                         }
                     }
+                    .padding()
+                    .padding(.top, 10)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -63,6 +68,8 @@ struct HomeView: View {
                 )
                 .ignoresSafeArea()
             )
+            
+            MenuView(showMenu: $showMenu)
         }
     }
     
@@ -109,5 +116,22 @@ struct HomeView: View {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
+    }
+}
+
+// Menu View
+struct MenuView: View {
+    
+    @Binding var showMenu: Bool
+    
+    var body: some View {
+        ZStack {
+            // Blur View
+            BlurView(style: .systemUltraThinMaterialDark)
+            Color("bg02")
+                .opacity(0.5)
+                .blur(radius: 15)
+        }
+        .ignoresSafeArea()
     }
 }
