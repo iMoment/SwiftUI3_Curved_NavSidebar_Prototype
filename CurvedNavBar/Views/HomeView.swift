@@ -143,7 +143,20 @@ struct MenuView: View {
                 .foregroundColor(Color.white.opacity(0.8))
                 
                 // MARK: Menu Buttons
+                MenuButtons(title: "Premium Access", image: "square.grid.2x2", offset: 0)
+                    .padding(.top, 40)
                 
+                MenuButtons(title: "Upload Content", image: "square.and.arrow.up.on.square", offset: 10)
+                
+                MenuButtons(title: "My Account", image: "profile", offset: 30)
+                
+                MenuButtons(title: "Make Reservation", image: "dollarsign.circle", offset: 10)
+                
+                MenuButtons(title: "Help", image: "questionmark.circle", offset: 0)
+                
+                Spacer(minLength: 10)
+                
+                MenuButtons(title: "Logout", image: "rectangle.portrait.and.arrow.right", offset: 0)
             }
             .padding(.trailing, 120)
             .padding()
@@ -170,6 +183,37 @@ struct MenuView: View {
                 .padding(.leading, -50)
         )
         .ignoresSafeArea()
+    }
+    
+    @ViewBuilder
+    func MenuButtons(title: String, image: String, offset: CGFloat) -> some View {
+        Button {
+            
+        } label: {
+            HStack(spacing: 12) {
+                if image == "profile" {
+                    Image(image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 50, height: 50)
+                        .clipShape(Circle())
+                } else {
+                    Image(systemName: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 25, height: 25)
+                        .foregroundColor(Color.white)
+                }
+                
+                Text(title)
+                    .font(.system(size: 17))
+                    .fontWeight(title == "logout" ? .semibold : .medium)
+                    .kerning(title == "logout" ? 1.2 : 0.8)
+                    .foregroundColor(Color.white.opacity(title == "logout" ? 0.9 : 0.65))
+            }
+            .padding(.vertical)
+        }
+        .offset(x: offset)
     }
 }
 
