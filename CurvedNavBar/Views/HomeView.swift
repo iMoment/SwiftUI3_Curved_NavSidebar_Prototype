@@ -126,12 +126,87 @@ struct MenuView: View {
     
     var body: some View {
         ZStack {
-            // Blur View
+            // MARK: Blur View
             BlurView(style: .systemUltraThinMaterialDark)
             Color("bg02")
                 .opacity(0.5)
                 .blur(radius: 15)
+            
+            // Content
+            VStack(alignment: .leading, spacing: 25) {
+                Button {
+                    
+                } label: {
+                    Image(systemName: "xmark.circle")
+                        .font(.title)
+                }
+                .foregroundColor(Color.white.opacity(0.8))
+                
+                // MARK: Menu Buttons
+                
+            }
+            .padding(.trailing, 120)
+            .padding()
+            .padding(.top, getSafeArea().top)
+            .padding(.bottom, getSafeArea().bottom)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
+        .clipShape(MenuShape())
+        .background(
+            MenuShape()
+                .stroke(
+                    .linearGradient(.init(colors: [
+                        
+                        Color("skyblue01"),
+                        Color("skyblue01")
+                            .opacity(0.7),
+                        Color("skyblue01")
+                            .opacity(0.5),
+                        Color.clear
+                        
+                    ]), startPoint: .top, endPoint: .bottom),
+                    lineWidth: 7
+                )
+                .padding(.leading, -50)
+        )
         .ignoresSafeArea()
+    }
+}
+
+struct MenuShape: Shape {
+    
+    func path(in rect: CGRect) -> Path {
+        return Path { path in
+            let width = rect.width - 100
+            let height = rect.height
+            
+            path.move(to: CGPoint(x: width, y: height))
+            path.addLine(to: CGPoint(x: 0, y: height))
+            path.addLine(to: CGPoint(x: 0, y: 0))
+            path.addLine(to: CGPoint(x: width, y: 0))
+            
+            // Curve
+            path.move(to: CGPoint(x: width, y: 0))
+            
+            path.addCurve(
+                to: CGPoint(x: width, y: height + 100),
+                control1: CGPoint(x: width + 150, y: height / 3),
+                control2: CGPoint(x: width - 150, y: height / 2))
+        }
+    }
+}
+
+// View Extension for Safe Area
+extension View {
+    func getSafeArea() -> UIEdgeInsets {
+        guard let screen = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return .zero }
+        
+        guard let safeArea = screen.windows.first?.safeAreaInsets else { return .zero }
+        
+        return safeArea
+    }
+    
+    func getScreenSize() -> CGRect {
+        return UIScreen.main.bounds
     }
 }
