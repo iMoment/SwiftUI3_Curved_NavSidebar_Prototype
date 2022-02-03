@@ -9,6 +9,8 @@ import SwiftUI
 
 struct HomeView: View {
     @State var showMenu: Bool = false
+    @State var animatePath: Bool = false
+    @State var animateBackground: Bool = false
     
     var body: some View {
         ZStack {
@@ -16,7 +18,17 @@ struct HomeView: View {
                 // Nav Bar
                 HStack {
                     Button {
+                        withAnimation {
+                            animateBackground.toggle()
+                        }
                         
+                        withAnimation(.spring()) {
+                            showMenu.toggle()
+                        }
+                        // Animating path with delay
+                        withAnimation(.interactiveSpring(response: 0.4, dampingFraction: 0.3, blendDuration: 0.3).delay(0.2)) {
+                            animatePath.toggle()
+                        }
                     } label:  {
                         Image("menu")
                             .resizable()
@@ -69,7 +81,12 @@ struct HomeView: View {
                 .ignoresSafeArea()
             )
             
-            MenuView(showMenu: $showMenu)
+            Color.black
+                .opacity(animateBackground ? 0.25 : 0)
+                .ignoresSafeArea()
+            
+            MenuView(showMenu: $showMenu, animatePath: $animatePath, animateBackground: $animateBackground)
+                .offset(x: showMenu ? 0 : -getScreenSize().width)
         }
     }
     
@@ -123,6 +140,8 @@ struct HomeView_Previews: PreviewProvider {
 struct MenuView: View {
     
     @Binding var showMenu: Bool
+    @Binding var animatePath: Bool
+    @Binding var animateBackground: Bool
     
     var body: some View {
         ZStack {
@@ -135,6 +154,20 @@ struct MenuView: View {
             // Content
             VStack(alignment: .leading, spacing: 25) {
                 Button {
+                    // Close Menu
+                    
+                    // Animating path with delay
+                    withAnimation(.interactiveSpring(response: 0.4, dampingFraction: 0.3, blendDuration: 0.3)) {
+                        animatePath.toggle()
+                    }
+                    
+                    withAnimation {
+                        animateBackground.toggle()
+                    }
+                    
+                    withAnimation(.spring().delay(0.1)) {
+                        showMenu.toggle()
+                    }
                     
                 } label: {
                     Image(systemName: "xmark.circle")
@@ -164,9 +197,9 @@ struct MenuView: View {
             .padding(.bottom, getSafeArea().bottom)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-        .clipShape(MenuShape())
+        .clipShape(MenuShape(value: animatePath ? 150 : 0))
         .background(
-            MenuShape()
+            MenuShape(value: animatePath ? 150 : 0)
                 .stroke(
                     .linearGradient(.init(colors: [
                         
@@ -178,7 +211,7 @@ struct MenuView: View {
                         Color.clear
                         
                     ]), startPoint: .top, endPoint: .bottom),
-                    lineWidth: 7
+                    lineWidth: animatePath ? 7 : 0
                 )
                 .padding(.leading, -50)
         )
@@ -219,6 +252,13 @@ struct MenuView: View {
 
 struct MenuShape: Shape {
     
+    var value: CGFloat
+    // Animate Path
+    var animatableData: CGFloat {
+        get { return value }
+        set { value = newValue }
+    }
+    
     func path(in rect: CGRect) -> Path {
         return Path { path in
             let width = rect.width - 100
@@ -234,8 +274,8 @@ struct MenuShape: Shape {
             
             path.addCurve(
                 to: CGPoint(x: width, y: height + 100),
-                control1: CGPoint(x: width + 150, y: height / 3),
-                control2: CGPoint(x: width - 150, y: height / 2))
+                control1: CGPoint(x: width + value, y: height / 3),
+                control2: CGPoint(x: width - value, y: height / 2))
         }
     }
 }
