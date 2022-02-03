@@ -46,7 +46,11 @@ struct HomeView: View {
                 
                 ScrollView(.vertical, showsIndicators: false) {
                     VStack(spacing: 25) {
-                        
+                        // Sample Cards
+                        ForEach(stories) { story in
+                            // Card View
+                            CardView(story: story)
+                        }
                     }
                 }
             }
@@ -59,6 +63,45 @@ struct HomeView: View {
                 )
                 .ignoresSafeArea()
             )
+        }
+    }
+    
+    @ViewBuilder
+    func CardView(story: Story) -> some View {
+        
+        VStack(alignment: .leading, spacing: 12) {
+            
+            GeometryReader { proxy in
+                
+                let size = proxy.size
+                
+                Image(story.image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: size.width, height: size.height)
+                    .cornerRadius(15)
+            }
+            .frame(height: 200)
+            
+            Text(story.title)
+                .font(.title2)
+                .fontWeight(.semibold)
+                .foregroundColor(Color.white.opacity(0.8))
+            
+            Button {
+                
+            } label: {
+                Text("Read Now")
+                    .font(.caption2)
+                    .fontWeight(.bold)
+                    .foregroundColor(Color.white)
+                    .padding(.vertical, 6)
+                    .padding(.horizontal)
+                    .background(
+                        Capsule()
+                            .fill(Color("red01"))
+                    )
+            }
         }
     }
 }
